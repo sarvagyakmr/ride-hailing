@@ -14,4 +14,8 @@ public class RideRequestedEvent {
     private Long startLocationId;
     private Long dropLocationId;
     private BigDecimal upfrontFare;
+    // Pickup location coordinates for geohash computation
+    private BigDecimal pickupLat;
+    private BigDecimal pickupLng;
+    private String geoHash;
 }
