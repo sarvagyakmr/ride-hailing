@@ -3,7 +3,7 @@ package com.ridehailing.ridematch.controller;
 import com.ridehailing.ridematch.dto.UserRequest;
 import com.ridehailing.ridematch.dto.UserResponse;
 import com.ridehailing.ridematch.entity.User;
-import com.ridehailing.ridematch.repository.UserRepository;
+import com.ridehailing.ridematch.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,22 +15,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
-        User user = User.builder()
-                .phone(request.getPhone())
-                .build();
-        
-        User savedUser = userRepository.save(user);
+        User savedUser = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(UserResponse.fromEntity(savedUser));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable("id") Long userId) {
-        return userRepository.findById(userId)
+        return userService.getUserById(userId)
                 .map(user -> ResponseEntity.ok(UserResponse.fromEntity(user)))
                 .orElse(ResponseEntity.notFound().build());
     }

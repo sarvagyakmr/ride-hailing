@@ -1,15 +1,15 @@
-package com.ridehailing.ridematch.dto;
+package com.ridehailing.ridematch.event;
 
 import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class RideRequest {
+public class RideRequestedEvent {
+    private Long rideId;
     private Long customerId;
     private Long startLocationId;
     private Long dropLocationId;

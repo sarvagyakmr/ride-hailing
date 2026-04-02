@@ -22,10 +22,10 @@ public class Ride {
     @Column(name = "customer_id", nullable = false)
     private Long customerId;
 
-    @Column(name = "driver_id", nullable = false)
+    @Column(name = "driver_id")
     private Long driverId;
 
-    @Column(name = "vehicle_id", nullable = false)
+    @Column(name = "vehicle_id")
     private Long vehicleId;
 
     @Column(name = "start_location_id", nullable = false)

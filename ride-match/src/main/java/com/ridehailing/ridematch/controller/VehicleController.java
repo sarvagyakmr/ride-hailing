@@ -4,7 +4,7 @@ import com.ridehailing.ridematch.dto.VehicleRequest;
 import com.ridehailing.ridematch.dto.VehicleResponse;
 import com.ridehailing.ridematch.dto.UpdateVehicleLocationRequest;
 import com.ridehailing.ridematch.entity.Vehicle;
-import com.ridehailing.ridematch.repository.VehicleRepository;
+import com.ridehailing.ridematch.service.VehicleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,23 +16,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class VehicleController {
 
-    private final VehicleRepository vehicleRepository;
+    private final VehicleService vehicleService;
 
     @PostMapping
     public ResponseEntity<VehicleResponse> createVehicle(@Valid @RequestBody VehicleRequest request) {
-        Vehicle vehicle = Vehicle.builder()
-                .locationId(request.getLocationId())
-                .status(request.getStatus())
-                .build();
-        
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
+        Vehicle savedVehicle = vehicleService.createVehicle(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(VehicleResponse.fromEntity(savedVehicle));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VehicleResponse> getVehicleById(@PathVariable("id") Long vehicleId) {
-        return vehicleRepository.findById(vehicleId)
+        return vehicleService.getVehicleById(vehicleId)
                 .map(vehicle -> ResponseEntity.ok(VehicleResponse.fromEntity(vehicle)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -41,12 +36,8 @@ public class VehicleController {
     public ResponseEntity<VehicleResponse> updateVehicleLocation(
             @PathVariable("id") Long vehicleId,
             @Valid @RequestBody UpdateVehicleLocationRequest request) {
-        return vehicleRepository.findById(vehicleId)
-                .map(vehicle -> {
-                    vehicle.setLocationId(request.getLocationId());
-                    Vehicle updatedVehicle = vehicleRepository.save(vehicle);
-                    return ResponseEntity.ok(VehicleResponse.fromEntity(updatedVehicle));
-                })
+        return vehicleService.updateVehicleLocation(vehicleId, request)
+                .map(vehicle -> ResponseEntity.ok(VehicleResponse.fromEntity(vehicle)))
                 .orElse(ResponseEntity.notFound().build());
     }
 }
