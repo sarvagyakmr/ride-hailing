@@ -81,7 +81,12 @@ public class RedisConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(
             RedisConnectionFactory connectionFactory,
             MessageListenerAdapter rideAssignmentListener) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer() {
+            @Override
+            public boolean isAutoStartup() {
+                return embeddedRedisEnabled;
+            }
+        };
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(rideAssignmentListener, rideRequestedTopic());
         return container;

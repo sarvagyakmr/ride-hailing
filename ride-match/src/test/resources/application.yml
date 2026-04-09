@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: ride-match
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  h2:
+    console:
+      enabled: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8080
+
+# Disable embedded Redis for unit tests
+redis:
+  embedded:
+    enabled: false
+    port: 6379
+
+# Ride assignment configuration
+ride:
+  assignment:
+    max-search-radius-km: 15
+    max-offers-per-ride: 3
+    offer-timeout-seconds: 30
+  scoring:
+    distance:
+      weight: 0.4
+    last-ride-time:
+      weight: 0.3
+    rating:
+      weight: 0.3
+    max-distance-km: 15
+    max-idle-minutes: 60
