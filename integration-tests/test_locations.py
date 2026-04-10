@@ -14,7 +14,9 @@ class TestCreateLocation:
 
     def test_create_location_success(self, http_session, base_url):
         """Creating a location with valid coordinates should return 201."""
-        payload = {"lat": 12.9716, "lng": 77.5946, "geoHash": "tdr1y0"}
+        import uuid
+        geo_hash = uuid.uuid4().hex[:6]
+        payload = {"lat": 12.9716, "lng": 77.5946, "geoHash": geo_hash}
         resp = http_session.post(f"{base_url}/locations", json=payload)
 
         assert resp.status_code == 201
@@ -22,11 +24,12 @@ class TestCreateLocation:
         assert body["id"] is not None
         assert float(body["lat"]) == pytest.approx(12.9716, abs=0.001)
         assert float(body["lng"]) == pytest.approx(77.5946, abs=0.001)
-        assert body["geoHash"] == "tdr1y0"
+        assert body["geoHash"] == geo_hash
 
     def test_create_location_negative_coordinates(self, http_session, base_url):
         """Locations with negative coordinates (southern/western hemisphere) should work."""
-        payload = {"lat": -33.8688, "lng": -151.2093, "geoHash": "r3gx2f"}
+        import uuid
+        payload = {"lat": -33.8688, "lng": -151.2093, "geoHash": uuid.uuid4().hex[:6]}
         resp = http_session.post(f"{base_url}/locations", json=payload)
 
         assert resp.status_code == 201
@@ -49,7 +52,7 @@ class TestGetLocation:
 
     def test_get_location_by_id(self, http_session, base_url, create_location):
         """Fetching an existing location should return correct data."""
-        loc = create_location(lat=28.6139, lng=77.2090, geo_hash="ttncg9")
+        loc = create_location(lat=28.6139, lng=77.2090)
 
         resp = http_session.get(f"{base_url}/locations/{loc['id']}")
         assert resp.status_code == 200

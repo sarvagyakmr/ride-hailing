@@ -17,11 +17,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "📦 Installing dependencies..."
-pip install -q -r "$SCRIPT_DIR/requirements.txt"
+pip3 install -q -r "$SCRIPT_DIR/requirements.txt"
 
 echo ""
 echo "🚀 Running integration tests..."
-echo "   Target: http://localhost:8080"
+echo "   Target: http://localhost:8081"
 echo ""
 
-python -m pytest "$SCRIPT_DIR" "$@"
+python3 -m pytest "$SCRIPT_DIR" "$@"

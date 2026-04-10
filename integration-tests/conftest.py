@@ -10,8 +10,9 @@ This module provides:
 import pytest
 import requests
 import time
+import uuid
 
-BASE_URL = "http://localhost:8080/api/v1"
+BASE_URL = "http://localhost:8081/api/v1"
 
 
 @pytest.fixture(scope="session")
@@ -61,7 +62,9 @@ def wait_for_service(http_session, base_url):
 @pytest.fixture
 def create_user(http_session, base_url):
     """Factory fixture – returns a function that creates a user."""
-    def _create(phone="9999999999"):
+    def _create(phone=None):
+        if phone is None:
+            phone = uuid.uuid4().hex[:10]
         resp = http_session.post(f"{base_url}/users", json={"phone": phone})
         assert resp.status_code == 201, f"Failed to create user: {resp.text}"
         return resp.json()
@@ -81,7 +84,9 @@ def create_customer(http_session, base_url):
 @pytest.fixture
 def create_location(http_session, base_url):
     """Factory fixture – returns a function that creates a location."""
-    def _create(lat=12.9716, lng=77.5946, geo_hash="tdr1y0"):
+    def _create(lat=12.9716, lng=77.5946, geo_hash=None):
+        if geo_hash is None:
+            geo_hash = uuid.uuid4().hex[:6]
         payload = {"lat": lat, "lng": lng, "geoHash": geo_hash}
         resp = http_session.post(f"{base_url}/locations", json=payload)
         assert resp.status_code == 201, f"Failed to create location: {resp.text}"
@@ -148,14 +153,14 @@ def setup_full_ride_ecosystem(
         customer = create_customer()
 
         # Driver side
-        user = create_user(phone="8888888888")
-        driver_loc = create_location(lat=driver_lat, lng=driver_lng, geo_hash="drvr01")
+        user = create_user(phone=uuid.uuid4().hex[:10])
+        driver_loc = create_location(lat=driver_lat, lng=driver_lng)
         vehicle = create_vehicle(location_id=driver_loc["id"])
         driver = create_driver(user_id=user["id"], vehicle_id=vehicle["id"])
 
         # Ride locations
-        pickup = create_location(lat=pickup_lat, lng=pickup_lng, geo_hash="pickup")
-        drop = create_location(lat=drop_lat, lng=drop_lng, geo_hash="drop01")
+        pickup = create_location(lat=pickup_lat, lng=pickup_lng)
+        drop = create_location(lat=drop_lat, lng=drop_lng)
 
         return {
             "customer": customer,

@@ -7,6 +7,7 @@ Endpoints under test:
 """
 
 import pytest
+import uuid
 
 
 class TestCreateDriver:
@@ -14,7 +15,7 @@ class TestCreateDriver:
 
     def test_create_driver_success(self, http_session, base_url, create_user, create_location, create_vehicle):
         """Creating a driver with a valid user and vehicle should return 201."""
-        user = create_user(phone="6660001111")
+        user = create_user(phone=uuid.uuid4().hex[:10])
         loc = create_location()
         vehicle = create_vehicle(location_id=loc["id"])
 
@@ -35,7 +36,7 @@ class TestGetDriver:
         self, http_session, base_url, create_user, create_location, create_vehicle, create_driver
     ):
         """Fetching an existing driver should return 200 with correct data."""
-        user = create_user(phone="6660002222")
+        user = create_user(phone=uuid.uuid4().hex[:10])
         loc = create_location()
         vehicle = create_vehicle(location_id=loc["id"])
         driver = create_driver(user_id=user["id"], vehicle_id=vehicle["id"])
