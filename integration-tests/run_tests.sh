@@ -17,7 +17,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "📦 Installing dependencies..."
-pip3 install -q -r "$SCRIPT_DIR/requirements.txt"
+pip3 install -q -r "$SCRIPT_DIR/requirements.txt" --break-system-packages
 
 echo ""
 echo "🚀 Running integration tests..."
